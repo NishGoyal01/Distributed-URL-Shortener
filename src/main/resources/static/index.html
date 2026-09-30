@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinkTrim | Distributed URL Shortener</title>
+    <meta
+      name="description"
+      content="LinkTrim turns long URLs into compact, shareable links with a Spring Boot backend, PostgreSQL persistence, Redis caching, Base62 codes, expiration, analytics, and rate limiting."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <nav class="nav" aria-label="Main navigation">
+          <div class="brand" aria-label="LinkTrim home">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 64 64" focusable="false" aria-hidden="true">
+                <path d="M46 14.5a10.5 10.5 0 0 1 10.4 10.4v.6A10.5 10.5 0 0 1 46 36H40.9L35.7 46a2.8 2.8 0 0 1-4.5 0l-5.2-7.2H20.4a10.5 10.5 0 0 1-10.4-10.4v-.6A10.5 10.5 0 0 1 20.4 14.5h25.6Zm-5.4 8.4H22.9a5 5 0 0 0-5 5v.6a5 5 0 0 0 5 5h17.7a5 5 0 0 0 5-5v-.6a5 5 0 0 0-5-5Zm-7.1 3.2a3.1 3.1 0 1 1-3.1 3.1 3.1 3.1 0 0 1 3.1-3.1Z" />
+              </svg>
+            </span>
+            <div class="brand-copy">
+              <span class="brand-title">LinkTrim</span>
+              <span class="brand-subtitle">Distributed URL Shortener</span>
+            </div>
+          </div>
+
+          <div class="nav-links" aria-label="Primary navigation">
+            <a href="#top">Home</a>
+            <a href="#create-card">Create link</a>
+            <a href="#analytics">Analytics</a>
+            <a class="button nav-cta" href="#create-card">Trim a URL</a>
+          </div>
+        </nav>
+      </header>
+
+      <main class="page-main">
+        <section class="hero panel" id="top">
+          <div class="hero-copy">
+            <p class="eyebrow">FAST - RELIABLE - DISTRIBUTED</p>
+            <h1>
+              Trim the long link.<br />
+              <span class="text-highlight">Keep the connection.</span>
+            </h1>
+            <p class="hero-text">
+              LinkTrim turns long URLs into compact, shareable links with a Spring Boot backend,
+              PostgreSQL persistence, Redis caching, Base62 codes, expiration, analytics, and rate limiting.
+            </p>
+            <div class="hero-actions">
+              <button class="button primary" type="button" data-scroll="#create-card">Trim a URL</button>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-label="Decorative transformation preview">
+            <div class="visual-card visual-card--primary">
+              <span class="visual-pill">Long URL</span>
+              <div class="visual-link visual-link--long">https://example.com/very/long/path/with/more/details</div>
+            </div>
+            <div class="visual-arrow" aria-hidden="true">
+              <svg viewBox="0 0 120 80" focusable="false">
+                <path d="M10 40h62m-16-16 16 16-16 16m38-24h25v-8h-25v8Zm0 24h25v8H84v-8Z" />
+              </svg>
+            </div>
+            <div class="visual-card visual-card--secondary">
+              <span class="visual-pill visual-pill--secondary">Short link</span>
+              <div class="visual-link visual-link--short">linktrim.local/7f3a9</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel create-card" id="create-card">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Create</p>
+              <h2>Trim a long URL</h2>
+            </div>
+          </div>
+
+          <p class="section-subtitle">Paste a link and LinkTrim will create a clean, shareable short URL.</p>
+
+          <form id="create-form" class="stack-form" novalidate>
+            <div class="field-group">
+              <label for="original-url">Original URL</label>
+              <div class="input-with-icon">
+                <span class="field-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><path d="M10.6 13.4a2.7 2.7 0 0 1 0-3.8l1.7-1.7a2.7 2.7 0 0 1 3.8 0l1.3 1.3a2.7 2.7 0 0 1 0 3.8L17 14.7a2.7 2.7 0 0 1-3.8 0l-.9-.9a1 1 0 1 0-1.4 1.4l.9.9a4.7 4.7 0 0 0 6.6 0l1.3-1.3a4.7 4.7 0 0 0 0-6.6L17.7 5.3a4.7 4.7 0 0 0-6.6 0l-1.7 1.7a4.7 4.7 0 0 0 0 6.6l.9.9a1 1 0 0 0 1.4-1.4l-.9-.9Zm2.8-2.8a2.7 2.7 0 0 1 0 3.8l-1.7 1.7a2.7 2.7 0 0 1-3.8 0L6.4 15.4a2.7 2.7 0 0 1 0-3.8L8 10.7a2.7 2.7 0 0 1 3.8 0l.9.9a1 1 0 0 0 1.4-1.4l-.9-.9a4.7 4.7 0 0 0-6.6 0L5.3 10.9a4.7 4.7 0 0 0 0 6.6l1.3 1.3a4.7 4.7 0 0 0 6.6 0l1.7-1.7a4.7 4.7 0 0 0 0-6.6l-.9-.9a1 1 0 0 0-1.4 1.4l.9.9Z"/></svg>
+                </span>
+                <input
+                  id="original-url"
+                  name="originalUrl"
+                  type="url"
+                  placeholder="https://example.com/very/long/url"
+                  aria-label="Original URL"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="expires-at">Optional expiration</label>
+              <input id="expires-at" name="expiresAt" type="datetime-local" aria-label="Optional expiration" />
+            </div>
+
+            <p class="helper-text">Supports http and https URLs.</p>
+
+            <div class="form-actions">
+              <button id="create-submit" class="button primary" type="submit">Trim URL</button>
+            </div>
+          </form>
+
+          <div id="create-message" class="status-message" aria-live="polite"></div>
+
+          <div id="result-panel" class="result-panel hidden" aria-live="polite">
+            <div class="panel-header">
+              <h3>Your LinkTrim link is ready</h3>
+            </div>
+            <div class="result-grid">
+              <div class="meta-row">
+                <span class="meta-label">Short link</span>
+                <a id="result-short-url" href="#" target="_blank" rel="noreferrer">-</a>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Original URL</span>
+                <span id="result-original-url">-</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Created</span>
+                <span id="result-created-at">-</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Expires</span>
+                <span id="result-expires-at">-</span>
+              </div>
+            </div>
+            <div class="action-row">
+              <button id="copy-short-url" class="button secondary" type="button">Copy link</button>
+              <button id="open-short-url" class="button secondary" type="button">Open link</button>
+              <button id="load-analytics" class="button tertiary" type="button">View analytics</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="how-it-works">
+          <div class="section-heading centered">
+            <div>
+              <p class="section-kicker">Product</p>
+              <h2>Everything important about a short link</h2>
+            </div>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card panel">
+              <div class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M8.5 5.5 4 10l4.5 4.5-1.4 1.4L1.2 10l5.9-5.9Zm7 13 4.5-4.5-4.5-4.5 1.4-1.4 5.9 5.9-5.9 5.9ZM11.8 3l.4 2.2-2.7 15.6-1.5-.3L10.3 5l1.5-2Z"/></svg>
+              </div>
+              <div class="feature-copy">
+                <div class="feature-number">01 — Trim</div>
+                <h3>Trim</h3>
+                <p>Create compact Base62 short codes from database-generated IDs.</p>
+              </div>
+            </article>
+
+            <article class="feature-card panel">
+              <div class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M9 4h6v2h-1v2.3l5 3.2v2.6l-5 3.2V18h1v2H9v-2h1v-2.7l-5-3.2v-2.6l5-3.2V6h-1V4Zm2 4.3v7.4l-3-1.9v-3.6l3-1.9Zm2 0 3 1.9v3.6l-3 1.9V8.3Z"/></svg>
+              </div>
+              <div class="feature-copy">
+                <div class="feature-number">02 — Redirect</div>
+                <h3>Redirect</h3>
+                <p>Use Redis for fast reads and PostgreSQL as the source of truth.</p>
+              </div>
+            </article>
+
+            <article class="feature-card panel">
+              <div class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M3 18h18v2H3zm2-4h3v3H5zm5-6h3v9h-3zm5 3h3v6h-3z"/></svg>
+              </div>
+              <div class="feature-copy">
+                <div class="feature-number">03 — Track</div>
+                <h3>Track</h3>
+                <p>Record click count and last access time using concurrency-safe updates.</p>
+              </div>
+            </article>
+
+            <article class="feature-card panel">
+              <div class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M12 2 4 6v6c0 4.6 3.1 8.9 8 10 4.9-1.1 8-5.4 8-10V6l-8-4Zm-1 6h2v5h-2V8Zm0 7h2v2h-2v-2Z"/></svg>
+              </div>
+              <div class="feature-copy">
+                <div class="feature-number">04 — Control</div>
+                <h3>Control</h3>
+                <p>Support expiration, deletion, validation, and Redis invalidation.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel health-panel" aria-labelledby="health-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">System</p>
+              <h2 id="health-title">System health</h2>
+            </div>
+          </div>
+
+          <div id="health-status-card" class="health-card" aria-live="polite">
+            <div class="health-badge" id="health-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 5.5A1.5 1.5 0 1 1 10.5 9 1.5 1.5 0 0 1 12 7.5Zm1.5 9.5h-3v-1.5h1V11h-1V9.5h2.5v6h1Z"/></svg>
+            </div>
+            <div class="health-copy">
+              <strong id="health-text">Checking system status…</strong>
+              <span id="health-subtext">Waiting for actuator response.</span>
+            </div>
+          </div>
+
+          <div id="health-details" class="health-details" aria-live="polite"></div>
+        </section>
+
+        <section class="panel analytics-panel" id="analytics">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Insights</p>
+              <h2>See how your link performs</h2>
+            </div>
+          </div>
+
+          <form id="stats-form" class="inline-form" novalidate>
+            <div class="field-row">
+              <div class="field-group field-mobile-grow">
+                <label for="stats-code">Enter a short code</label>
+                <input id="stats-code" type="text" placeholder="7f3a9" aria-label="Short code" />
+              </div>
+              <div class="form-actions form-actions-inline">
+                <button id="stats-submit" type="submit" class="button primary">View analytics</button>
+              </div>
+            </div>
+          </form>
+
+          <div id="stats-message" class="status-message" aria-live="polite"></div>
+          <div id="stats-empty" class="empty-state">Enter a short code above to view real link statistics.</div>
+
+          <div id="stats-panel" class="result-panel hidden" aria-live="polite">
+            <div class="stats-header">
+              <div>
+                <span class="section-kicker small-kicker">Status</span>
+                <span id="stats-status" class="status-badge neutral">Unknown</span>
+              </div>
+              <div class="stats-code-box">
+                <span class="meta-label">Short code</span>
+                <strong id="stats-short-code">-</strong>
+              </div>
+            </div>
+
+            <div class="metric-grid">
+              <div class="metric-card">
+                <span>Clicks</span>
+                <strong id="stats-click-count">0</strong>
+              </div>
+              <div class="metric-card">
+                <span>Created</span>
+                <strong id="stats-created-at">-</strong>
+              </div>
+              <div class="metric-card">
+                <span>Last accessed</span>
+                <strong id="stats-last-accessed">-</strong>
+              </div>
+              <div class="metric-card">
+                <span>Expires</span>
+                <strong id="stats-expires-at">-</strong>
+              </div>
+            </div>
+
+            <div class="meta-row">
+              <span class="meta-label">Original URL</span>
+              <span id="stats-original-url">-</span>
+            </div>
+
+            <div class="action-row">
+              <button id="stats-copy-url" class="button secondary" type="button">Copy link</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel recent-links-panel" aria-labelledby="recent-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Session</p>
+              <h2 id="recent-title">Recent links from this browser session</h2>
+            </div>
+          </div>
+
+          <div id="recent-links" class="recent-links" aria-live="polite"></div>
+          <div id="recent-empty" class="empty-state">No links created in this browser session yet.</div>
+        </section>
+
+        <section class="panel delete-panel" aria-labelledby="delete-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker danger-kicker">Delete</p>
+              <h2 id="delete-title">Manage a link</h2>
+            </div>
+          </div>
+
+          <form id="delete-form" class="inline-form" novalidate>
+            <div class="field-row">
+              <div class="field-group field-mobile-grow">
+                <label for="delete-code">Short code</label>
+                <input id="delete-code" type="text" placeholder="7f3a9" aria-label="Short code" />
+              </div>
+              <div class="form-actions form-actions-inline">
+                <button id="delete-submit" type="submit" class="button danger">Delete link</button>
+              </div>
+            </div>
+          </form>
+
+          <div id="delete-message" class="status-message" aria-live="polite"></div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-brand-block">
+          <span class="footer-brand">LinkTrim</span>
+          <span class="footer-subtitle">Distributed URL Shortener</span>
+        </div>
+        <div class="footer-meta">Spring Boot - PostgreSQL - Redis - Base62</div>
+        <div class="footer-links">
+          <a href="/actuator/health">Health</a>
+        </div>
+      </footer>
+    </div>
+
+    <div id="toast-region" class="toast-region" aria-live="assertive" aria-atomic="true"></div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

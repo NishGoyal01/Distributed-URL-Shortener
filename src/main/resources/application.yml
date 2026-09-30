@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: url-shortener
+  mvc:
+    throw-exception-if-no-handler-found: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/${POSTGRES_DB:urlshortener}}
+    username: ${SPRING_DATASOURCE_USERNAME:${POSTGRES_USER:urlshortener}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${POSTGRES_PASSWORD:change-me-locally}}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
+      timeout: 2000ms
+
+app:
+  base-url: ${APP_BASE_URL:}
+  cache:
+    ttl-seconds: ${APP_CACHE_TTL_SECONDS:300}
+  rate-limit:
+    max-requests: ${APP_RATE_LIMIT_MAX_REQUESTS:60}
+    window-seconds: ${APP_RATE_LIMIT_WINDOW_SECONDS:60}
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui/index.html
+    operations-sorter: method

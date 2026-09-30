@@ -1,0 +1,13 @@
+target/
+.idea/
+.vscode/
+*.iml
+*.log
+docker-compose-config.out
+verification-results.txt
+.env
+.env.*
+!.env.example
+.DS_Store
+**/.DS_Store
+
