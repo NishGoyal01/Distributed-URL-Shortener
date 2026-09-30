@@ -1,6 +1,8 @@
 # LinkTrim
 
 LinkTrim is a production-style modular monolith URL shortener built with Java 21, Spring Boot 3, PostgreSQL, Redis, Flyway, Docker Compose, and Springdoc OpenAPI.
+<img width="1901" height="867" alt="image" src="https://github.com/user-attachments/assets/1c3aa128-c639-4ee0-9d1d-e1f47895725b" />
+
 
 ## Frontend overview
 
