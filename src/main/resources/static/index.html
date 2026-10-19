@@ -12,7 +12,7 @@
   </head>
   <body>
     <div class="page-shell">
-      <header class="site-header">
+      <aside class="site-header">
         <nav class="nav" aria-label="Main navigation">
           <div class="brand" aria-label="LinkTrim home">
             <span class="brand-mark" aria-hidden="true">
@@ -27,13 +27,15 @@
           </div>
 
           <div class="nav-links" aria-label="Primary navigation">
-            <a href="#top">Home</a>
-            <a href="#create-card">Create link</a>
+            <a class="is-active" href="#dashboard">Dashboard</a>
+            <a href="#links">Links</a>
             <a href="#analytics">Analytics</a>
-            <a class="button nav-cta" href="#create-card">Trim a URL</a>
+            <a href="/swagger-ui/index.html">API Docs</a>
+            <a href="#settings">Settings</a>
           </div>
+          <div class="sidebar-footer"><span>LinkTrim</span><small>URL SHORTENER</small></div>
         </nav>
-      </header>
+      </aside>
 
       <main class="page-main">
         <section class="hero panel" id="top">
@@ -69,15 +71,20 @@
           </div>
         </section>
 
+        <section class="dashboard-heading" id="dashboard">
+          <div>
+            <h1>Dashboard</h1>
+            <p>Overview of your short links</p>
+          </div>
+        </section>
+
         <section class="panel create-card" id="create-card">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">Create</p>
-              <h2>Trim a long URL</h2>
+              <p class="section-kicker">Quick action</p>
+              <h2>Shorten a link</h2>
             </div>
           </div>
-
-          <p class="section-subtitle">Paste a link and LinkTrim will create a clean, shareable short URL.</p>
 
           <form id="create-form" class="stack-form" novalidate>
             <div class="field-group">
@@ -97,16 +104,14 @@
               </div>
             </div>
 
-            <div class="field-group">
+            <div class="form-actions">
+              <button id="create-submit" class="button primary" type="submit"><svg class="button-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M13.2 2 5.7 13h5.1L9.9 22l8.4-12h-5.2L13.2 2Z" /></svg> Shorten</button>
+            </div>
+            <details class="expiration-options">
+              <summary>Expiration options</summary>
               <label for="expires-at">Optional expiration</label>
               <input id="expires-at" name="expiresAt" type="datetime-local" aria-label="Optional expiration" />
-            </div>
-
-            <p class="helper-text">Supports http and https URLs.</p>
-
-            <div class="form-actions">
-              <button id="create-submit" class="button primary" type="submit">Trim URL</button>
-            </div>
+            </details>
           </form>
 
           <div id="create-message" class="status-message" aria-live="polite"></div>
@@ -139,6 +144,21 @@
               <button id="load-analytics" class="button tertiary" type="button">View analytics</button>
             </div>
           </div>
+        </section>
+
+        <section class="summary-grid" aria-label="Link summary">
+          <article class="summary-card">
+            <span>LINKS THIS SESSION</span>
+            <strong id="dashboard-link-count">0</strong>
+          </article>
+          <article class="summary-card">
+            <span>CLICKS TRACKED</span>
+            <strong id="dashboard-click-count">0</strong>
+          </article>
+          <article class="summary-card summary-card--health">
+            <span>SERVICE STATUS</span>
+            <strong id="dashboard-health-count">Checking</strong>
+          </article>
         </section>
 
         <section class="how-it-works">
@@ -196,7 +216,7 @@
           </div>
         </section>
 
-        <section class="panel health-panel" aria-labelledby="health-title">
+        <section class="panel health-panel" id="settings" aria-labelledby="health-title">
           <div class="section-heading">
             <div>
               <p class="section-kicker">System</p>
@@ -282,16 +302,27 @@
           </div>
         </section>
 
-        <section class="panel recent-links-panel" aria-labelledby="recent-title">
+        <section class="panel recent-links-panel" id="links" aria-labelledby="recent-title">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">Session</p>
-              <h2 id="recent-title">Recent links from this browser session</h2>
+              <p class="section-kicker">Your links</p>
+              <h2 id="recent-title">Recent links</h2>
             </div>
           </div>
 
           <div id="recent-links" class="recent-links" aria-live="polite"></div>
           <div id="recent-empty" class="empty-state">No links created in this browser session yet.</div>
+        </section>
+
+        <section class="panel most-clicked-panel" aria-labelledby="most-clicked-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Performance</p>
+              <h2 id="most-clicked-title">Most clicked</h2>
+            </div>
+          </div>
+          <div id="top-links" class="top-links"></div>
+          <div id="top-links-empty" class="empty-state">Load link analytics to compare click activity.</div>
         </section>
 
         <section class="panel delete-panel" aria-labelledby="delete-title">

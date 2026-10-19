@@ -25,6 +25,8 @@ spring:
       port: ${SPRING_DATA_REDIS_PORT:6379}
       password: ${SPRING_DATA_REDIS_PASSWORD:}
       timeout: 2000ms
+      ssl:
+        enabled: ${SPRING_DATA_REDIS_SSL_ENABLED:false}
 
 app:
   base-url: ${APP_BASE_URL:}

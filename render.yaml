@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: linktrim-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    maxShutdownDelaySeconds: 30
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: APP_BASE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_DATA_REDIS_HOST
+        fromService:
+          type: keyvalue
+          name: linktrim-cache
+          property: host
+      - key: SPRING_DATA_REDIS_PORT
+        fromService:
+          type: keyvalue
+          name: linktrim-cache
+          property: port
+      - key: SPRING_DATA_REDIS_SSL_ENABLED
+        value: "false"
+      - key: APP_CACHE_TTL_SECONDS
+        value: "300"
+      - key: APP_RATE_LIMIT_MAX_REQUESTS
+        value: "60"
+      - key: APP_RATE_LIMIT_WINDOW_SECONDS
+        value: "60"
+
+  - type: keyvalue
+    name: linktrim-cache
+    plan: free
+    region: oregon
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []

@@ -35,6 +35,11 @@ const healthBadge = document.getElementById('health-badge');
 const recentLinksContainer = document.getElementById('recent-links');
 const recentEmptyState = document.getElementById('recent-empty');
 const loadAnalyticsBtn = document.getElementById('load-analytics');
+const dashboardLinkCount = document.getElementById('dashboard-link-count');
+const dashboardClickCount = document.getElementById('dashboard-click-count');
+const dashboardHealthCount = document.getElementById('dashboard-health-count');
+const topLinksContainer = document.getElementById('top-links');
+const topLinksEmptyState = document.getElementById('top-links-empty');
 
 const state = {
   currentShortCode: '',
@@ -241,7 +246,7 @@ function appendRecentLink(entry) {
   const existing = state.recentLinks.find((item) => item.shortCode === entry.shortCode);
   if (existing) {
     const index = state.recentLinks.indexOf(existing);
-    state.recentLinks[index] = entry;
+    state.recentLinks[index] = { ...existing, ...entry };
   } else {
     state.recentLinks.unshift(entry);
   }
@@ -263,6 +268,7 @@ function renderRecentLinks() {
 
   if (!items.length) {
     recentEmptyState.hidden = false;
+    renderDashboardSummaries(items);
     return;
   }
 
@@ -274,15 +280,17 @@ function renderRecentLinks() {
 
     const shortLink = document.createElement('div');
     shortLink.className = 'recent-short';
-    shortLink.textContent = item.shortUrl;
+    shortLink.textContent = item.shortCode || item.shortUrl;
+    shortLink.title = item.shortUrl || '';
 
     const originalLink = document.createElement('div');
     originalLink.className = 'recent-original';
     originalLink.textContent = item.originalUrl;
 
     const createdAt = document.createElement('div');
-    createdAt.className = 'recent-created';
-    createdAt.textContent = formatDate(item.createdAt);
+    createdAt.className = 'recent-clicks';
+    createdAt.textContent = typeof item.clickCount === 'number' ? String(item.clickCount) : '—';
+    createdAt.title = `Created ${formatDate(item.createdAt)}`;
 
     const actions = document.createElement('div');
     actions.className = 'recent-actions';
@@ -310,6 +318,53 @@ function renderRecentLinks() {
     actions.append(copyButton, openButton, analyticsButton);
     row.append(shortLink, originalLink, createdAt, actions);
     recentLinksContainer.appendChild(row);
+  });
+
+  renderDashboardSummaries(items);
+}
+
+function renderDashboardSummaries(items = readRecentLinks()) {
+  const knownClickCounts = items
+    .map((item) => item.clickCount)
+    .filter((clickCount) => typeof clickCount === 'number');
+  const totalClicks = knownClickCounts.reduce((total, clickCount) => total + clickCount, 0);
+
+  dashboardLinkCount.textContent = String(items.length);
+  dashboardClickCount.textContent = String(totalClicks);
+
+  const rankedLinks = items
+    .filter((item) => typeof item.clickCount === 'number')
+    .sort((first, second) => second.clickCount - first.clickCount);
+  topLinksContainer.replaceChildren();
+  topLinksEmptyState.hidden = rankedLinks.length > 0;
+
+  const highestClickCount = rankedLinks[0]?.clickCount || 0;
+  rankedLinks.slice(0, 5).forEach((item) => {
+    const row = document.createElement('div');
+    row.className = 'top-link-row';
+
+    const label = document.createElement('div');
+    label.className = 'top-link-label';
+
+    const code = document.createElement('strong');
+    code.textContent = item.shortCode || item.shortUrl;
+
+    const clicks = document.createElement('span');
+    clicks.textContent = String(item.clickCount);
+
+    const bar = document.createElement('div');
+    bar.className = 'top-link-bar';
+    const fill = document.createElement('span');
+    fill.style.width = `${highestClickCount ? (item.clickCount / highestClickCount) * 100 : 0}%`;
+    bar.appendChild(fill);
+
+    const url = document.createElement('div');
+    url.className = 'top-link-url';
+    url.textContent = item.originalUrl;
+
+    label.append(code, clicks);
+    row.append(label, bar, url);
+    topLinksContainer.appendChild(row);
   });
 }
 
@@ -353,7 +408,13 @@ function renderAnalytics(data) {
   }
 
   deleteCodeInput.value = shortCode;
-  appendRecentLink({ shortCode, shortUrl: state.currentShortUrl, originalUrl: data.originalUrl, createdAt: data.createdAt });
+  appendRecentLink({
+    shortCode,
+    shortUrl: state.currentShortUrl,
+    originalUrl: data.originalUrl,
+    createdAt: data.createdAt,
+    clickCount: data.clickCount ?? 0,
+  });
 }
 
 async function handleCreateUrl(event) {
@@ -634,6 +695,8 @@ function renderHealthState(payload) {
 
   healthText.textContent = isOperational ? 'System operational' : 'Service unavailable';
   healthSubtext.textContent = isOperational ? 'All core services are responding.' : 'The application is not fully healthy right now.';
+  dashboardHealthCount.textContent = isOperational ? 'Operational' : 'Unavailable';
+  dashboardHealthCount.classList.toggle('is-down', !isOperational);
 
   healthBadge.style.background = isOperational ? 'rgba(19, 174, 113, 0.12)' : 'rgba(223, 74, 93, 0.12)';
   healthBadge.style.color = isOperational ? 'var(--success)' : 'var(--error)';

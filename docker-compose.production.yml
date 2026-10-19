@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${APP_IMAGE:-linktrim:latest}
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    environment:
+      PORT: ${PORT:-8080}
+      APP_BASE_URL: ${APP_BASE_URL:?Set APP_BASE_URL to the public HTTPS origin}
+      APP_CACHE_TTL_SECONDS: ${APP_CACHE_TTL_SECONDS:-300}
+      APP_RATE_LIMIT_MAX_REQUESTS: ${APP_RATE_LIMIT_MAX_REQUESTS:-60}
+      APP_RATE_LIMIT_WINDOW_SECONDS: ${APP_RATE_LIMIT_WINDOW_SECONDS:-60}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:?Set the managed PostgreSQL JDBC URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:?Set the managed PostgreSQL username}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:?Set the managed PostgreSQL password}
+      SPRING_DATA_REDIS_HOST: ${SPRING_DATA_REDIS_HOST:?Set the managed Redis hostname}
+      SPRING_DATA_REDIS_PORT: ${SPRING_DATA_REDIS_PORT:-6379}
+      SPRING_DATA_REDIS_PASSWORD: ${SPRING_DATA_REDIS_PASSWORD:-}
+      SPRING_DATA_REDIS_SSL_ENABLED: ${SPRING_DATA_REDIS_SSL_ENABLED:-false}
+    ports:
+      - "${PORT:-8080}:${PORT:-8080}"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:${PORT:-8080}/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
