@@ -8,7 +8,7 @@ import com.example.urlshortener.entity.UrlEntity;
 import com.example.urlshortener.exception.ExpiredUrlException;
 import com.example.urlshortener.exception.NotFoundException;
 import com.example.urlshortener.repository.UrlRepository;
-import com.example.urlshortener.util.UrlValidator;
+import com.example.urlshortener.validation.UrlValidator;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

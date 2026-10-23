@@ -1,4 +1,4 @@
-package com.example.urlshortener.util;
+package com.example.urlshortener.validation;
 
 import org.junit.jupiter.api.Test;
 

@@ -32,6 +32,4 @@ public interface UrlRepository extends JpaRepository<UrlEntity, Long> {
     @Transactional
     @Query("UPDATE UrlEntity u SET u.clickCount = u.clickCount + 1, u.lastAccessedAt = :accessedAt WHERE u.shortCode = :shortCode")
     int incrementClickStats(@Param("shortCode") String shortCode, @Param("accessedAt") Instant accessedAt);
-
-    boolean existsByShortCode(String shortCode);
 }

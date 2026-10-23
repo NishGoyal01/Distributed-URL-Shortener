@@ -3,8 +3,6 @@ package com.example.urlshortener.service;
 import com.example.urlshortener.dto.CreateUrlRequest;
 import com.example.urlshortener.entity.UrlEntity;
 import com.example.urlshortener.repository.UrlRepository;
-import com.example.urlshortener.service.UrlCreationTransaction;
-import com.example.urlshortener.util.Base62;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -38,7 +36,6 @@ class UrlShortenerServiceTest {
     @Test
     void shouldCreateUrlWithGeneratedShortCode() {
         UrlEntity entity = new UrlEntity();
-        entity.setId(123L);
         entity.setShortCode("a7K2mQ");
         entity.setOriginalUrl("https://example.com/long/path");
         entity.setNormalizedOriginalUrl("https://example.com/long/path");

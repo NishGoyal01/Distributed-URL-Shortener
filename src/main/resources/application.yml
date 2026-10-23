@@ -4,9 +4,9 @@ spring:
   mvc:
     throw-exception-if-no-handler-found: true
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/${POSTGRES_DB:urlshortener}}
-    username: ${SPRING_DATASOURCE_USERNAME:${POSTGRES_USER:urlshortener}}
-    password: ${SPRING_DATASOURCE_PASSWORD:${POSTGRES_PASSWORD:change-me-locally}}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://ep-icy-bar-a1kw4t5h-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require}
+    username: ${SPRING_DATASOURCE_USERNAME:neondb_owner}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

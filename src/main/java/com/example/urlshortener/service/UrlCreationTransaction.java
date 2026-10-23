@@ -55,9 +55,14 @@ public class UrlCreationTransaction {
         entity.setNormalizedOriginalUrl(normalizedUrl);
         entity.setCreatedAt(Instant.now());
         entity.setExpiresAt(expiresAt);
-        entity.setShortCode(claimReleasedCode().orElseGet(base62::generateCode));
+        entity.setShortCode(claimReleasedCode().orElse(null));
 
-        return urlRepository.saveAndFlush(entity);
+        UrlEntity saved = urlRepository.saveAndFlush(entity);
+        if (saved.getShortCode() == null) {
+            saved.setShortCode(base62.encode(saved.getId()));
+            saved = urlRepository.saveAndFlush(saved);
+        }
+        return saved;
     }
 
     @Transactional(readOnly = true)

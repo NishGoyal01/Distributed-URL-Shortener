@@ -32,6 +32,7 @@ const healthText = document.getElementById('health-text');
 const healthSubtext = document.getElementById('health-subtext');
 const healthDetails = document.getElementById('health-details');
 const healthBadge = document.getElementById('health-badge');
+const previewNotice = document.getElementById('preview-notice');
 const recentLinksContainer = document.getElementById('recent-links');
 const recentEmptyState = document.getElementById('recent-empty');
 const loadAnalyticsBtn = document.getElementById('load-analytics');
@@ -51,6 +52,7 @@ let activeNotification = null;
 let activeNotificationTimer = null;
 let activeRequestController = null;
 let operationId = 0;
+let backendAvailable = false;
 
 function beginOperation() {
   activeRequestController?.abort();
@@ -315,6 +317,9 @@ function renderRecentLinks() {
       handleAnalytics({ preventDefault() {} });
     });
 
+    copyButton.disabled = !backendAvailable;
+    openButton.disabled = !backendAvailable;
+    analyticsButton.disabled = !backendAvailable;
     actions.append(copyButton, openButton, analyticsButton);
     row.append(shortLink, originalLink, createdAt, actions);
     recentLinksContainer.appendChild(row);
@@ -693,9 +698,15 @@ function renderHealthState(payload) {
   const isOperational = status === 'UP';
   const details = payload && payload.components ? payload.components : {};
 
-  healthText.textContent = isOperational ? 'System operational' : 'Service unavailable';
-  healthSubtext.textContent = isOperational ? 'All core services are responding.' : 'The application is not fully healthy right now.';
-  dashboardHealthCount.textContent = isOperational ? 'Operational' : 'Unavailable';
+  setBackendAvailability(isOperational);
+  previewNotice.textContent = isOperational
+    ? 'Backend connected — link management is available.'
+    : 'Frontend preview only — the URL API, Redis, and database are not connected.';
+  healthText.textContent = isOperational ? 'System operational' : 'Backend not connected';
+  healthSubtext.textContent = isOperational
+    ? 'All core services are responding.'
+    : 'This frontend preview runs without the URL API.';
+  dashboardHealthCount.textContent = isOperational ? 'Operational' : 'Preview only';
   dashboardHealthCount.classList.toggle('is-down', !isOperational);
 
   healthBadge.style.background = isOperational ? 'rgba(19, 174, 113, 0.12)' : 'rgba(223, 74, 93, 0.12)';
@@ -729,6 +740,30 @@ function renderHealthState(payload) {
 
     detail.append(dot, label);
     healthDetails.appendChild(detail);
+  });
+}
+
+function setBackendAvailability(isAvailable) {
+  backendAvailable = isAvailable;
+
+  [
+    originalUrlInput,
+    expiresAtInput,
+    createSubmit,
+    statsCodeInput,
+    statsSubmit,
+    deleteCodeInput,
+    deleteSubmit,
+    document.getElementById('copy-short-url'),
+    document.getElementById('open-short-url'),
+    loadAnalyticsBtn,
+    statsCopyBtn,
+  ].forEach((control) => {
+    control.disabled = !isAvailable;
+  });
+
+  document.querySelectorAll('.recent-actions button').forEach((button) => {
+    button.disabled = !isAvailable;
   });
 }
 

@@ -39,19 +39,21 @@ flowchart TD
     G[Rate Limiter] --> D
 ```
 
-The browser UI is served by the same Spring Boot application. It is not a separate microservice; the browser sends relative requests to the API and the application serves static files and API endpoints from the same container. The application binds to the platform-provided `PORT` environment variable, defaulting to port 8080 for local development.
+The current deployment serves the static browser UI from Vercel without deploying the Spring Boot application. For local full-stack development, Spring Boot also serves the same static files and API endpoints from one process. The application binds to the platform-provided `PORT` environment variable, defaulting to port 8080 for local development.
 
 Short URLs use `APP_BASE_URL` when explicitly configured; otherwise, the public origin is derived from the current request. Framework forwarded-header support allows reverse-proxy HTTPS and host headers to be honored. Inside Docker Compose, PostgreSQL and Redis are addressed by their service names, not by localhost.
 
 ## Frontend flow
 
 ```text
-Browser → Spring Boot static UI/API → Redis → PostgreSQL
+Current: Browser → Vercel static frontend
+
+Future full-stack: Browser → Spring Boot API → Redis → PostgreSQL
 ```
 
-The static frontend uses plain HTML, CSS, and JavaScript. API calls remain relative to the same origin so the UI works in Docker Compose and local Spring Boot execution without CORS or a separate frontend service.
+The static frontend uses plain HTML, CSS, and JavaScript. In the current frontend-only deployment, API-dependent controls remain disabled until a healthy backend is available. Locally, the UI and API share the Spring Boot origin.
 
-Developer-facing API documentation remains available at `/swagger-ui/index.html` and `/v3/api-docs` on the same Spring Boot application, but it is not presented as a primary product feature in the public website navigation. PostgreSQL is the source of truth, while Redis accelerates redirect lookups and cache misses. The frontend belongs to the same Spring Boot modular monolith as the backend. There is no separate frontend deployment.
+Developer-facing API documentation remains available at `/swagger-ui/index.html` and `/v3/api-docs` when the backend is running. PostgreSQL is the source of truth, while Redis accelerates redirect lookups and cache misses. The backend remains a modular monolith; the current Vercel deployment contains only the static frontend.
 
 ## Request flows
 
@@ -80,7 +82,7 @@ The database retains the canonical URL data only. The short code is unique and i
 
 Base62 conversion uses the exact alphabet:
 
-`0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`
+`0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`
 
 This keeps codes short, deterministic, and safe for URLs while avoiding random or UUID-based visible identifiers.
 

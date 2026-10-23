@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.urlshortener.entity.UrlEntity;
 import com.example.urlshortener.repository.ReleasedShortCodeRepository;
 import com.example.urlshortener.repository.UrlRepository;
+import com.example.urlshortener.util.Base62;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,18 +82,6 @@ class UrlControllerIntegrationTest {
     }
 
     @Test
-    void shouldServeFrontendAndStaticAssets() throws Exception {
-        mockMvc.perform(get("/"))
-            .andExpect(status().isOk());
-
-        mockMvc.perform(get("/styles.css"))
-            .andExpect(status().isOk());
-
-        mockMvc.perform(get("/app.js"))
-            .andExpect(status().isOk());
-    }
-
-    @Test
     void shouldServeFrontendRootAndStaticAssets() throws Exception {
         mockMvc.perform(get("/"))
             .andExpect(status().isOk());
@@ -143,10 +132,10 @@ class UrlControllerIntegrationTest {
         Long originalId = urlRepository.findByShortCode(first.get("shortCode").asText()).orElseThrow().getId();
         JsonNode second = createUrl("https://example.com/reuse?x=1#part");
 
+        assertEquals(new Base62().encode(originalId), first.get("shortCode").asText());
         assertEquals(first.get("shortCode").asText(), second.get("shortCode").asText());
         assertEquals(1, urlRepository.countByNormalizedOriginalUrl("https://example.com/reuse?x=1#part"));
         assertEquals(originalId, urlRepository.findByShortCode(first.get("shortCode").asText()).orElseThrow().getId());
-        assertCodeFormat(second.get("shortCode").asText());
     }
 
     @Test
@@ -241,10 +230,4 @@ class UrlControllerIntegrationTest {
         return objectMapper.readTree(result.getResponse().getContentAsString());
     }
 
-    private void assertCodeFormat(String code) {
-        assertTrue(code.length() >= 6);
-        assertTrue(code.matches("[0-9A-Za-z]+"));
-        assertTrue(code.matches(".*[A-Za-z].*"));
-        assertTrue(code.matches(".*[0-9].*"));
-    }
 }

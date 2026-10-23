@@ -44,10 +44,6 @@ public class UrlEntity {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getShortCode() {
         return shortCode;
     }
@@ -62,10 +58,6 @@ public class UrlEntity {
 
     public void setOriginalUrl(String originalUrl) {
         this.originalUrl = originalUrl;
-    }
-
-    public String getNormalizedOriginalUrl() {
-        return normalizedOriginalUrl;
     }
 
     public void setNormalizedOriginalUrl(String normalizedOriginalUrl) {
@@ -92,15 +84,7 @@ public class UrlEntity {
         return clickCount;
     }
 
-    public void setClickCount(long clickCount) {
-        this.clickCount = clickCount;
-    }
-
     public Instant getLastAccessedAt() {
         return lastAccessedAt;
-    }
-
-    public void setLastAccessedAt(Instant lastAccessedAt) {
-        this.lastAccessedAt = lastAccessedAt;
     }
 }

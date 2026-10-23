@@ -23,20 +23,12 @@ public class ReleasedShortCodeEntity {
     @Column(name = "released_at", nullable = false)
     private Instant releasedAt;
 
-    public Long getId() {
-        return id;
-    }
-
     public String getShortCode() {
         return shortCode;
     }
 
     public void setShortCode(String shortCode) {
         this.shortCode = shortCode;
-    }
-
-    public Instant getReleasedAt() {
-        return releasedAt;
     }
 
     public void setReleasedAt(Instant releasedAt) {

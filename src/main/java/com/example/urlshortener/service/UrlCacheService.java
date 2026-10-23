@@ -4,7 +4,6 @@ import com.example.urlshortener.cache.UrlCacheEntry;
 import com.example.urlshortener.entity.UrlEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,10 +25,11 @@ public class UrlCacheService {
 
     public UrlCacheService(
             StringRedisTemplate redisTemplate,
+            ObjectMapper objectMapper,
             @Value("${app.cache.ttl-seconds}") long cacheTtlSeconds) {
         this.redisTemplate = redisTemplate;
         this.cacheTtlSeconds = cacheTtlSeconds;
-        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        this.objectMapper = objectMapper;
     }
 
     public Optional<UrlCacheEntry> get(String shortCode) {
@@ -41,6 +41,7 @@ public class UrlCacheService {
             UrlCacheEntry entry = objectMapper.readValue(value, UrlCacheEntry.class);
             return Optional.of(entry);
         } catch (JsonProcessingException e) {
+            log.warn("Ignoring invalid cached URL entry for shortCode={}", shortCode, e);
             return Optional.empty();
         }
     }
@@ -54,7 +55,7 @@ public class UrlCacheService {
         if (ttl.isNegative() || ttl.isZero()) {
             ttl = Duration.ofSeconds(1);
         }
-        UrlCacheEntry entry = new UrlCacheEntry(shortCode, entity.getOriginalUrl(), effectiveExpiry);
+        UrlCacheEntry entry = new UrlCacheEntry(entity.getOriginalUrl(), effectiveExpiry);
         try {
             redisTemplate.opsForValue().set(key(shortCode), objectMapper.writeValueAsString(entry), ttl);
             log.info("URL cached in Redis for shortCode={} ttlSeconds={} expiresAt={}", shortCode, ttl.getSeconds(), effectiveExpiry);

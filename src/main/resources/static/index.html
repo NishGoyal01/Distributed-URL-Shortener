@@ -6,7 +6,7 @@
     <title>LinkTrim | Distributed URL Shortener</title>
     <meta
       name="description"
-      content="LinkTrim turns long URLs into compact, shareable links with a Spring Boot backend, PostgreSQL persistence, Redis caching, Base62 codes, expiration, analytics, and rate limiting."
+      content="Explore the LinkTrim URL shortener frontend preview. Link management features require the backend service."
     />
     <link rel="stylesheet" href="/styles.css" />
   </head>
@@ -30,7 +30,6 @@
             <a class="is-active" href="#dashboard">Dashboard</a>
             <a href="#links">Links</a>
             <a href="#analytics">Analytics</a>
-            <a href="/swagger-ui/index.html">API Docs</a>
             <a href="#settings">Settings</a>
           </div>
           <div class="sidebar-footer"><span>LinkTrim</span><small>URL SHORTENER</small></div>
@@ -46,8 +45,11 @@
               <span class="text-highlight">Keep the connection.</span>
             </h1>
             <p class="hero-text">
-              LinkTrim turns long URLs into compact, shareable links with a Spring Boot backend,
-              PostgreSQL persistence, Redis caching, Base62 codes, expiration, analytics, and rate limiting.
+              Explore the LinkTrim URL shortener dashboard. Link creation, analytics, and redirects
+              become available when the backend service is deployed.
+            </p>
+            <p id="preview-notice" class="preview-notice" role="status">
+              Frontend preview only — the URL API, Redis, and database are not connected.
             </p>
             <div class="hero-actions">
               <button class="button primary" type="button" data-scroll="#create-card">Trim a URL</button>
@@ -99,18 +101,19 @@
                   type="url"
                   placeholder="https://example.com/very/long/url"
                   aria-label="Original URL"
+                  disabled
                   required
                 />
               </div>
             </div>
 
             <div class="form-actions">
-              <button id="create-submit" class="button primary" type="submit"><svg class="button-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M13.2 2 5.7 13h5.1L9.9 22l8.4-12h-5.2L13.2 2Z" /></svg> Shorten</button>
+              <button id="create-submit" class="button primary" type="submit" disabled><svg class="button-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M13.2 2 5.7 13h5.1L9.9 22l8.4-12h-5.2L13.2 2Z" /></svg> Shorten</button>
             </div>
             <details class="expiration-options">
               <summary>Expiration options</summary>
               <label for="expires-at">Optional expiration</label>
-              <input id="expires-at" name="expiresAt" type="datetime-local" aria-label="Optional expiration" />
+              <input id="expires-at" name="expiresAt" type="datetime-local" aria-label="Optional expiration" disabled />
             </details>
           </form>
 
@@ -139,9 +142,9 @@
               </div>
             </div>
             <div class="action-row">
-              <button id="copy-short-url" class="button secondary" type="button">Copy link</button>
-              <button id="open-short-url" class="button secondary" type="button">Open link</button>
-              <button id="load-analytics" class="button tertiary" type="button">View analytics</button>
+              <button id="copy-short-url" class="button secondary" type="button" disabled>Copy link</button>
+              <button id="open-short-url" class="button secondary" type="button" disabled>Open link</button>
+              <button id="load-analytics" class="button tertiary" type="button" disabled>View analytics</button>
             </div>
           </div>
         </section>
@@ -249,10 +252,10 @@
             <div class="field-row">
               <div class="field-group field-mobile-grow">
                 <label for="stats-code">Enter a short code</label>
-                <input id="stats-code" type="text" placeholder="7f3a9" aria-label="Short code" />
+                <input id="stats-code" type="text" placeholder="7f3a9" aria-label="Short code" disabled />
               </div>
               <div class="form-actions form-actions-inline">
-                <button id="stats-submit" type="submit" class="button primary">View analytics</button>
+                <button id="stats-submit" type="submit" class="button primary" disabled>View analytics</button>
               </div>
             </div>
           </form>
@@ -297,7 +300,7 @@
             </div>
 
             <div class="action-row">
-              <button id="stats-copy-url" class="button secondary" type="button">Copy link</button>
+              <button id="stats-copy-url" class="button secondary" type="button" disabled>Copy link</button>
             </div>
           </div>
         </section>
@@ -337,10 +340,10 @@
             <div class="field-row">
               <div class="field-group field-mobile-grow">
                 <label for="delete-code">Short code</label>
-                <input id="delete-code" type="text" placeholder="7f3a9" aria-label="Short code" />
+                <input id="delete-code" type="text" placeholder="7f3a9" aria-label="Short code" disabled />
               </div>
               <div class="form-actions form-actions-inline">
-                <button id="delete-submit" type="submit" class="button danger">Delete link</button>
+                <button id="delete-submit" type="submit" class="button danger" disabled>Delete link</button>
               </div>
             </div>
           </form>
@@ -355,9 +358,6 @@
           <span class="footer-subtitle">Distributed URL Shortener</span>
         </div>
         <div class="footer-meta">Spring Boot - PostgreSQL - Redis - Base62</div>
-        <div class="footer-links">
-          <a href="/actuator/health">Health</a>
-        </div>
       </footer>
     </div>
 

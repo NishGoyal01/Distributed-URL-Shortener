@@ -182,6 +182,13 @@ h1 {
   font-size: 1.08rem;
   line-height: 1.75;
 }
+.preview-notice {
+  max-width: 610px;
+  margin: 0;
+  color: var(--warning);
+  font-weight: 600;
+  line-height: 1.6;
+}
 
 .hero-actions { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-top: 1.25rem; }
 .section-subtitle { margin: 0 0 1.25rem; color: var(--muted); font-size: 1rem; }
@@ -876,4 +883,3 @@ input:focus { border-color: #718094; box-shadow: 0 0 0 2px rgba(255,255,255,.07)
   .form-actions-inline .button { width: 100%; }
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-
