@@ -6,7 +6,7 @@ LinkTrim is a URL shortener built as a Java 21 and Spring Boot modular monolith,
 
 > **Deployment note:** The Vercel deployment serves the static frontend only. The Spring Boot API, PostgreSQL, and Redis are not deployed there, so creating links, redirects, analytics, and deletion require a running backend. Use the local full-stack setup below to try those features.
 
-<img width="1917" height="696" alt="1" src="https://github.com/user-attachments/assets/98f96a44-6aa4-4652-bd10-771358f9bc99" />
+<img width="1890" height="696" alt="1" src="https://github.com/user-attachments/assets/8e39547d-9287-4b21-a2b1-67b50daae177" />
 
 <img width="1872" height="842" alt="image" src="https://github.com/user-attachments/assets/4b2e55c5-50ad-40ff-b769-e9cb3d367676" />
 
